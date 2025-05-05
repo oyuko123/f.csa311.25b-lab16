@@ -1,21 +1,20 @@
-# Lab 13
+# Lab 15
 
-## Changes compared to Lab 10
+## Өмнөх Лаб11-с өөрчлөгдсөн зүйлс
 
-Instead of the development setup with the frontend on port 3000 and a proxy to the backend on port 8080, this implementation now runs the entire code from the backend on port 8080. Similar to HW5, the backend serves the compiled React code from the frontend at `/` and responds to API requests at `/api` addresses on the server.
+Frontend-ыг 3000 port дээр, backend-ийг 8080 port дээр proxy-гоор холбосон хөгжүүлэлтийн тохиргооны оронд энэ хэрэгжүүлэлт одоо бүх кодыг backend-ээс 8080 port дээр ажиллуулна. Backend нь frontend-ын хөрвүүлэгдсэн React кодыг / хаягаар хариу боловсруулалт хийдэг бөгөөд серверийн /api хаягууд дээрх API хүсэлтэд хариу өгдөг.
 
-This is done by `App.java` inherenting from `SimpleWebServer` rather than `NanoHTTPD`, where `SimpleWebServer` already implements how to serve static files from a directory (directory configured through the constructor call). We now overwrite the `serve` function to respond to the `/api` calls but delegate all other addresses to the superclass. The frontend code needs to be relative to the backend code at `../front-end/build`.
+Энэ нь `App.java` файлыг `NanoHTTPD`-ийн оронд `SimpleWebServer`-ээс удамшуулан хийгдсэн бөгөөд `SimpleWebServer` нь статик файлуудыг директороос (конструкторын дуудлагаар тохируулсан директор) боловсруулах аргыг аль хэдийн хэрэгжүүлсэн байдаг. Бид одоо `serve` функцийг `/api` дуудлагад хариу өгөхөөр өөрчилж, бусад бүх хаягийг суперкласс руу шилжүүлсэн. Frontend код нь backend кодтой харьцангуйгаар `../front-end/build` хаяг дээр байх ёстой.
 
-The frontend is changed only minimally to expect the API at address `/api`.
+Frontend нь зөвхөн `/api` хаяг дээр API-г хүлээж авахын тулд бага зэрэг өөрчлөгдсөн.
 
+## Суулгалтыг ганц том jar файлаар хийх
 
-## Deployment as fat jar file
+Бид `maven-assembly-plugin` plugin-ыг Maven-д ашиглан Java кодыг бүх хамаарлуудын хамт нэг jar файл болгон багцлахдаа `mvn package` командыг дуудахад хэрэглэдэг. Уг файл `target/back-end-1.0-SNAPSHOT-jar-with-dependencies.jar` хаягт байрлана. Pom файлд `configuration/archive/manifest/mainClass` хэсэгт гол классын нэмэлт тодорхойлолт хийснээр одоо хөрвүүлэгдсэн Java кодыг зөвхөн `java -jar target/back-end-1.0-SNAPSHOT-jar-with-dependencies.jar` командаар ажиллуулах боломжтой болсон.
 
-We use the `maven-assembly-plugin` plugin for maven to package the Java code with all dependencies into a single jar file when `mvn package` is called. The file can be found in `target/back-end-1.0-SNAPSHOT-jar-with-dependencies.jar`. With the extra declaration of the main class in the pom file `configuration/archive/maifest/mainClass` it is now possible to run the compiled Java code simply with `java -jar target/back-end-1.0-SNAPSHOT-jar-with-dependencies.jar`.
+## Бүгдийг build хийх
 
-## Building everything
-
-Build the frontend and the backend, then package them with Docker.
+frontend and the backend-г build хийгээд Docker-той хамт package хийх.
 
 ```sh
 cd back-end
@@ -27,4 +26,4 @@ cd ..
 docker build -t lab13 --platform linux/amd64 .
 ```
 
-You can run the container with `docker run -p 8080:8080 lab13` and should be able to see the server starting on the command line and be able to access it at `http://localhost:8080`.
+Та контейнерийг `docker run -p 8080:8080 lab13` командаар ажиллуулж болно. Ингэснээр командын мөрөнд сервер эхэлж байгааг харах боломжтой бөгөөд `http://localhost:8080` хаягаар хандах боломжтой байх ёстой.
